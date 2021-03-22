@@ -16,4 +16,4 @@ Run main.py
 - Auto sharpen
 - Auto cartoon
 - Auto invert
-- Remove a color
+- Color mask
