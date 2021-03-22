@@ -22,8 +22,12 @@ class Filter(QWidget):
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
         self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
         self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.n_btn.setIconSize(QSize(60, 60))
 
 class Adjust(QWidget):
     def __init__(self):
@@ -39,20 +43,65 @@ class Adjust(QWidget):
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
         self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
         self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.n_btn.setIconSize(QSize(60, 60))
 
 class Crop(QWidget):
     def __init__(self):
         super().__init__()
         uic.loadUi("ui\\crop_btn.ui", self)
+
         self.frame = self.findChild(QFrame, "frame")
         self.y_btn = self.findChild(QPushButton, "y_btn")
         self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.y_btn.setIconSize(QSize(70, 70))
         self.n_btn = self.findChild(QPushButton, "n_btn")
         self.n_btn.setIcon(QIcon("icon/cross.png"))
-        self.slider = self.findChild(QSlider, "slider")
+        self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.n_btn.setIconSize(QSize(70, 70))
 
+        self.rotate = self.findChild(QPushButton, "rotate")
+        self.rotate.setIcon(QIcon("icon/rotate90.png"))
+        self.rotate.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.rotate.setIconSize(QSize(50, 50))
+        self.rotatect = self.findChild(QPushButton, "rotatect")
+        self.rotatect.setIcon(QIcon("icon/rotatect90.png"))
+        self.rotatect.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.rotatect.setIconSize(QSize(50, 50))
+
+        self.vflip = self.findChild(QPushButton, "vflip")
+        self.vflip.setIcon(QIcon("icon/vflip.png"))
+        self.vflip.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.vflip.setIconSize(QSize(50, 50))
+        self.hflip = self.findChild(QPushButton, "hflip")
+        self.hflip.setIcon(QIcon("icon/hflip.png"))
+        self.hflip.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.hflip.setIconSize(QSize(50, 50))
+
+class Brightness(QWidget):
+    def __init__(self):
+        super().__init__()
+        uic.loadUi("ui\\brightness_btn.ui", self)
+
+        self.frame = self.findChild(QFrame, "frame")
+        self.y_btn = self.findChild(QPushButton, "y_btn")
+        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.y_btn.setIconSize(QSize(70, 70))
+        self.n_btn = self.findChild(QPushButton, "n_btn")
+        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.n_btn.setIconSize(QSize(70, 70))
+
+        self.pten = self.findChild(QPushButton, "pten")
+        self.pten.setStyleSheet("QPushButton{border: 0px solid;}")
+        self.mten = self.findChild(QPushButton, "mten")
+        self.mten.setStyleSheet("QPushButton{border: 0px solid;}")
 
 class ResizableRubberBand(QWidget):
     def __init__(self, parent=None, img_class=None, update=None):
@@ -69,16 +118,12 @@ class ResizableRubberBand(QWidget):
         layout.addWidget(QSizeGrip(self), 0, Qt.AlignRight | Qt.AlignBottom)
 
         self._band = QRubberBand(QRubberBand.Rectangle, self)
-
         self._band.show()
         self.show()
 
     def update_dim(self):
-        try:
-            self.left, self.top = self.pos().x(), self.pos().y()
-            self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
-        except:
-            pass
+        self.left, self.top = self.pos().x(), self.pos().y()
+        self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
 
     def resizeEvent(self, event):
         try:
@@ -186,8 +231,10 @@ class Main(QWidget):
         self.zoom_moment = False
         self._zoom = 0
 
-        # rotate
+        # misc
         self.rotate_value = 0
+        self.brightness_value = 0
+        self.flip = [False, False]
 
     def update_img(self, movable=False):
         self.img = QPixmap(qimage2ndarray.array2qimage(cv2.cvtColor(self.img_class.img, cv2.COLOR_BGR2RGB)))
@@ -227,17 +274,18 @@ class Main(QWidget):
         def click_y():
             filter_frame.frame.setParent(None)
             self.img_class.img_copy = deepcopy(self.img_class.img)
+            self.img_class.grand_img_copy = deepcopy(self.img_class.img)
             self.vbox.addWidget(self.base_frame)
 
         def click_n():
-            if not np.array_equal(self.img_class.img_copy, self.img_class.img):
+            if not np.array_equal(self.img_class.grand_img_copy, self.img_class.img):
                 msg = QMessageBox.question(self, "Cancel edits", "Confirm to discard all the changes?   ",
                                            QMessageBox.Yes | QMessageBox.No)
                 if msg != QMessageBox.Yes:
                     return False
 
             filter_frame.frame.setParent(None)
-            self.img_class.reset()
+            self.img_class.grand_reset()
             self.update_img()
             self.vbox.addWidget(self.base_frame)
 
@@ -256,24 +304,29 @@ class Main(QWidget):
     def adjust_frame(self):
         def click_crop(rotate=False):
             def click_y1():
-                self.img_class.rotate_img(self.rotate_value, crop=True)
-                self.img_class.crop_img(self.rb.top * 2, self.rb.bottom * 2, self.rb.left * 2, self.rb.right * 2)
-                # self.img_class.change_b_c(beta=40)
+                self.rb.update_dim()
+                if rotate:
+                    self.img_class.rotate_img(self.rotate_value, crop=True, flip=self.flip)
+                    self.img_class.crop_img(self.rb.top * 2, self.rb.bottom * 2, self.rb.left * 2, self.rb.right * 2)
+                else:
+                    self.img_class.reset(self.flip)
+                    self.img_class.crop_img(self.rb.top, self.rb.bottom, self.rb.left, self.rb.right)
                 self.update_img()
                 self.zoom_moment = False
 
+                self.img_class.img_copy = deepcopy(self.img_class.img)
                 self.slider.setParent(None)
                 crop_frame.frame.setParent(None)
                 self.vbox.addWidget(adjust_frame.frame)
                 self.rb.close()
 
             def click_n1():
-                if not np.array_equal(self.img_class.img_copy, self.img_class.img):
+                if not np.array_equal(img_copy, self.img_class.img):
                     msg = QMessageBox.question(self, "Cancel edits", "Confirm to discard all the changes?   ",
                                                QMessageBox.Yes | QMessageBox.No)
                     if msg != QMessageBox.Yes:
                         return False
-                self.img_class.change_b_c(beta=40)
+
                 self.img_class.reset()
                 self.update_img()
                 self.zoom_moment = False
@@ -285,6 +338,8 @@ class Main(QWidget):
 
             def change_slide():
                 self.rotate_value = self.slider.value()
+                self.slider.setValue(self.rotate_value)
+
                 self.img_class.rotate_img(self.rotate_value)
 
                 self.rb.setGeometry(self.img_class.left, self.img_class.top, self.img_class.right - self.img_class.left,
@@ -292,36 +347,114 @@ class Main(QWidget):
                 self.rb.update_dim()
                 self.update_img(True)
 
+            def add_90():
+                if self.rotate_value <= 270:
+                    self.rotate_value += 90
+                else:
+                    self.rotate_value = 360
+                self.slider.setValue(self.rotate_value)
+                change_slide()
+
+            def subtract_90():
+                if self.rotate_value >= 90:
+                    self.rotate_value -= 90
+                else:
+                    self.rotate_value = 0
+                self.slider.setValue(self.rotate_value)
+                change_slide()
+
+            def vertical_flip():
+                nonlocal vflip_ct
+                self.img_class.img = cv2.flip(self.img_class.img, 0)
+                if rotate:
+                    self.update_img(True)
+                else:
+                    self.update_img()
+                vflip_ct += 1
+                self.flip[0] = vflip_ct % 2 == 1
+
+            def horizontal_flip():
+                nonlocal hflip_ct
+                self.img_class.img = cv2.flip(self.img_class.img, 1)
+                if rotate:
+                    self.update_img(True)
+                else:
+                    self.update_img()
+                hflip_ct += 1
+                self.flip[1] = hflip_ct % 2 == 1
+
             crop_frame = Crop()
             crop_frame.n_btn.clicked.connect(click_n1)
             crop_frame.y_btn.clicked.connect(click_y1)
+            crop_frame.rotate.clicked.connect(add_90)
+            crop_frame.rotatect.clicked.connect(subtract_90)
+            crop_frame.vflip.clicked.connect(vertical_flip)
+            crop_frame.hflip.clicked.connect(horizontal_flip)
+            self.flip = [False, False]
+            vflip_ct = 2
+            hflip_ct = 2
+
             adjust_frame.frame.setParent(None)
             self.vbox.addWidget(crop_frame.frame)
 
             self.rb = ResizableRubberBand(self.gv, self.img_class, self.update_img)
-            self.rb.setGeometry(300, 200, 400, 250)
+            self.rb.setGeometry(0, 0, self.img_class.img.shape[1], self.img_class.img.shape[0])
             self.img_class.change_b_c(beta=-40)
-            crop_frame.slider.setParent(None)
 
             if not rotate:
                 self.update_img()
+                crop_frame.rotate.setParent(None)
+                crop_frame.rotatect.setParent(None)
             else:
                 self.vbox1.insertWidget(1, self.slider)
+                self.slider.setRange(0, 360)
                 self.slider.setValue(0)
                 self.slider.valueChanged.connect(change_slide)
                 self.zoom_moment = True
                 self.img_class.rotate_img(0)
-                self.rb.setGeometry(0, 0, self.img_class.img_width // 2, self.img_class.img_height // 2)
+                self.rb.setGeometry(0, 0, self.img_class.img.shape[0] // 2, self.img_class.img.shape[1] // 2)
                 self.update_img(True)
+
+            img_copy = deepcopy(self.img_class.img)
+
+        def click_brightness():
+            def click_y1():
+                self.slider.setParent(None)
+                brightness_frame.frame.setParent(None)
+                self.vbox.addWidget(adjust_frame.frame)
+
+            def click_n1():
+                self.img_class.reset()
+                self.update_img()
+
+                self.slider.setParent(None)
+                brightness_frame.frame.setParent(None)
+                self.vbox.addWidget(adjust_frame.frame)
+
+            def change_slide():
+                self.brightness_value = self.slider.value()
+
+
+            brightness_frame = Brightness()
+            brightness_frame.y_btn.clicked.connect(click_y1)
+            brightness_frame.n_btn.clicked.connect(click_n1)
+
+            adjust_frame.frame.setParent(None)
+            self.vbox.addWidget(brightness_frame.frame)
+
+            self.vbox1.insertWidget(1, self.slider)
+            self.slider.setRange(-180, 180)
+            self.slider.setValue(0)
 
         def click_y():
             self.start_detect = False
             adjust_frame.frame.setParent(None)
             self.img_class.img_copy = deepcopy(self.img_class.img)
+            self.img_class.grand_img_copy = deepcopy(self.img_class.img)
             self.vbox.addWidget(self.base_frame)
 
         def click_n():
-            if not np.array_equal(self.img_class.img_copy, self.img_class.img):
+            if not np.array_equal(self.img_class.grand_img_copy, self.img_class.img):
                 msg = QMessageBox.question(self, "Cancel edits", "Confirm to discard all the changes?   ",
                                            QMessageBox.Yes | QMessageBox.No)
                 if msg != QMessageBox.Yes:
@@ -329,7 +462,7 @@ class Main(QWidget):
 
             self.start_detect = False
             adjust_frame.frame.setParent(None)
-            self.img_class.reset()
+            self.img_class.grand_reset()
             self.update_img()
             self.vbox.addWidget(self.base_frame)
 
@@ -338,6 +471,7 @@ class Main(QWidget):
         adjust_frame.n_btn.clicked.connect(click_n)
         adjust_frame.crop_btn.clicked.connect(click_crop)
         adjust_frame.rotate_btn.clicked.connect(lambda _: click_crop(rotate=True))
+        adjust_frame.brightness_btn.clicked.connect(click_brightness)
 
         self.base_frame.setParent(None)
         self.vbox.addWidget(adjust_frame.frame)

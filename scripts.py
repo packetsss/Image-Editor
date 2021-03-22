@@ -17,6 +17,7 @@ class Images:
 
         self.img = cv2.resize(self.img, (self.img_width, self.img_height))
         self.img_copy = deepcopy(self.img)
+        self.grand_img_copy = deepcopy(self.img)
 
         self.img_name = img.split('\\')[-1].split(".")[0]
         self.img_format = img.split('\\')[-1].split(".")[1]
@@ -105,8 +106,8 @@ class Images:
     def crop_img(self, left, right, top, bottom):
         self.img = self.img[left:right, top:bottom]
 
-    def rotate_img(self, angle, crop=False):
-        self.reset()
+    def rotate_img(self, angle, crop=False, flip=[False, False]):
+        self.reset(flip)
         if not crop:
             self.img = cv2.resize(self.img, (0, 0), fx=0.5, fy=0.5)
             w, h = self.img.shape[1], self.img.shape[0]
@@ -138,8 +139,15 @@ class Images:
     def save_img(self, dst, name):
         cv2.imwrite(f"{dst}\\{name}.{self.img_format}", self.img)
 
-    def reset(self):
+    def reset(self, flip=[False, False]):
         self.img = deepcopy(self.img_copy)
+        if flip[0]:
+            self.img = cv2.flip(self.img, 0)
+        if flip[1]:
+            self.img = cv2.flip(self.img, 1)
+
+    def grand_reset(self):
+        self.img = deepcopy(self.grand_img_copy)
 
 
 def main():

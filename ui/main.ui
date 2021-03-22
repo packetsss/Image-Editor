@@ -16,10 +16,25 @@
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <layout class="QHBoxLayout" name="hbox">
+     <property name="spacing">
+      <number>0</number>
+     </property>
      <item>
       <layout class="QVBoxLayout" name="vbox1">
        <item>
         <widget class="QGraphicsView" name="gv">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>1200</width>
+           <height>900</height>
+          </size>
+         </property>
          <property name="styleSheet">
           <string notr="true">QGraphicsView{border: 0px}</string>
          </property>
@@ -65,10 +80,10 @@
           <number>100</number>
          </property>
          <property name="leftMargin">
-          <number>120</number>
+          <number>200</number>
          </property>
          <property name="rightMargin">
-          <number>120</number>
+          <number>200</number>
          </property>
          <item>
           <widget class="QPushButton" name="pushButton">
@@ -120,6 +135,9 @@
      </item>
      <item>
       <layout class="QVBoxLayout" name="vbox">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -139,10 +157,10 @@
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <property name="leftMargin">
-           <number>20</number>
+           <number>10</number>
           </property>
           <property name="rightMargin">
-           <number>20</number>
+           <number>10</number>
           </property>
           <item>
            <layout class="QVBoxLayout" name="vbox3">

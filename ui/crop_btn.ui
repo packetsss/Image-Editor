@@ -45,13 +45,13 @@
        <number>20</number>
       </property>
       <property name="leftMargin">
-       <number>35</number>
+       <number>0</number>
       </property>
       <property name="topMargin">
        <number>0</number>
       </property>
       <property name="rightMargin">
-       <number>35</number>
+       <number>0</number>
       </property>
       <property name="bottomMargin">
        <number>0</number>
@@ -59,18 +59,24 @@
       <item>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <property name="spacing">
-         <number>5</number>
-        </property>
-        <property name="rightMargin">
          <number>0</number>
         </property>
+        <property name="topMargin">
+         <number>80</number>
+        </property>
         <property name="bottomMargin">
-         <number>130</number>
+         <number>80</number>
         </property>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout">
-          <property name="topMargin">
-           <number>150</number>
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>15</number>
+          </property>
+          <property name="rightMargin">
+           <number>15</number>
           </property>
           <item>
            <widget class="QPushButton" name="y_btn">
@@ -83,7 +89,7 @@
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>70</height>
+              <height>90</height>
              </size>
             </property>
             <property name="font">
@@ -110,7 +116,7 @@
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>70</height>
+              <height>90</height>
              </size>
             </property>
             <property name="font">
@@ -129,17 +135,98 @@
          </layout>
         </item>
         <item>
-         <widget class="QSlider" name="slider">
-          <property name="minimum">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>60</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_5">
+          <property name="spacing">
            <number>0</number>
           </property>
-          <property name="maximum">
-           <number>360</number>
+          <property name="leftMargin">
+           <number>30</number>
           </property>
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+          <property name="rightMargin">
+           <number>30</number>
           </property>
-         </widget>
+          <item>
+           <widget class="QPushButton" name="hflip">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="vflip">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>30</number>
+          </property>
+          <property name="rightMargin">
+           <number>30</number>
+          </property>
+          <item>
+           <widget class="QPushButton" name="rotatect">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="rotate">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>90</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </item>
