@@ -67,12 +67,18 @@ class ResizableRubberBand(QWidget):
         layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(QSizeGrip(self), 0, Qt.AlignLeft | Qt.AlignTop)
         layout.addWidget(QSizeGrip(self), 0, Qt.AlignRight | Qt.AlignBottom)
-        # layout.addWidget(QSizeGrip(self), 0, Qt.AlignBottom | Qt.AlignLeft)
-        # layout.addWidget(QSizeGrip(self), 0, Qt.AlignTop | Qt.AlignRight)
+
         self._band = QRubberBand(QRubberBand.Rectangle, self)
 
         self._band.show()
         self.show()
+
+    def update_dim(self):
+        try:
+            self.left, self.top = self.pos().x(), self.pos().y()
+            self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
+        except:
+            pass
 
     def resizeEvent(self, event):
         try:
@@ -87,77 +93,43 @@ class ResizableRubberBand(QWidget):
         window_size = self.size()
         qp = QPainter(self)
         qp.drawRoundedRect(0, 0, window_size.width(), window_size.height(), self.borderRadius, self.borderRadius)
-        if self.right > self.img_class.img_width:
-            self.left = self.img_class.img_width - self._band.width() - 1
-            self.move(self.left, self.top)
-        elif self.bottom > self.img_class.img_height:
-            self.top = self.img_class.img_height - self._band.height() - 1
-            self.move(self.left, self.top)
-        elif self.left < 0:
-            self.left = 1
-            self.move(self.left, self.top)
-        elif self.top < 0:
-            self.top = 1
-            self.move(self.left, self.top)
-        try:
-            self.left, self.top = self.pos().x(), self.pos().y()
-            self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
-        except:
-            pass
 
     def mousePressEvent(self, event):
         if self.draggable and event.button() == Qt.LeftButton:
 
             self.mousePressPos = event.globalPos()  # global
             self.mouseMovePos = event.globalPos() - self.pos()  # local
-            # print(self.mousePressPos, self.mouseMovePos)
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & Qt.LeftButton:
-            if self.right > self.img_class.img_width:
-                self.left = self.img_class.img_width - self._band.width() - 1
-                self.move(self.left, self.top)
-            elif self.bottom > self.img_class.img_height:
-                self.top = self.img_class.img_height - self._band.height() - 1
-                self.move(self.left, self.top)
-            elif self.left < 0:
-                self.left = 1
-                self.move(self.left, self.top)
-            elif self.top < 0:
-                self.top = 1
-                self.move(self.left, self.top)
-            else:
+            if self.right <= self.img_class.img_width and self.bottom <= self.img_class.img_height \
+                    and self.left >= 0 and self.top >= 0:
                 globalPos = event.globalPos()
                 diff = globalPos - self.mouseMovePos
                 self.move(diff)  # move window
                 self.mouseMovePos = globalPos - self.pos()
-            try:
-                self.left, self.top = self.pos().x(), self.pos().y()
-                self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
-            except:
-                pass
+
+            self.left, self.top = self.pos().x(), self.pos().y()
+            self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
 
     def mouseReleaseEvent(self, event):
         if self.mousePressPos is not None:
-            if event.button() == Qt.RightButton:
-                if self.right > self.img_class.img_width:
-                    self.left = self.img_class.img_width - self._band.width() - 1
-                    self.move(self.left, self.top)
-                elif self.bottom > self.img_class.img_height:
-                    self.top = self.img_class.img_height - self._band.height() - 1
-                    self.move(self.left, self.top)
-                elif self.left < 0:
-                    self.left = 1
-                    self.move(self.left, self.top)
-                elif self.top < 0:
-                    self.top = 1
-                    self.move(self.left, self.top)
-                try:
-                    self.left, self.top = self.pos().x(), self.pos().y()
-                    self.right, self.bottom = self._band.width() + self.left, self._band.height() + self.top
-                except:
-                    pass
+            if event.button() == Qt.LeftButton:
                 self.mousePressPos = None
+
+        if self.left < 0:
+            self.left = 0
+            self.move(0, self.top)
+        if self.right > self.img_class.img_width:
+            self.left = self.img_class.img_width - self._band.width()
+            self.move(self.left, self.top)
+        if self.bottom > self.img_class.img_height:
+            self.top = self.img_class.img_height - self._band.height()
+            self.move(self.left, self.top)
+        if self.top < 0:
+            self.top = 0
+            self.move(self.left, 0)
+
 
 class Start(QWidget):
     def __init__(self):
@@ -203,10 +175,6 @@ class Main(QWidget):
 
         # display img
         self.gv = self.findChild(QGraphicsView, "gv")
-        self.gv.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.gv.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.gv.setAlignment(Qt.AlignTop | Qt.AlignLeft)
-
         self.scene = QGraphicsScene()
         self.scene_img = self.scene.addPixmap(self.img)
         self.gv.setScene(self.scene)
@@ -215,13 +183,17 @@ class Main(QWidget):
         self.zoom_moment = False
         self._zoom = 0
 
+        # rotate
+        self.rotate_value = 0
+
     def update_img(self, movable=False):
         self.img = QPixmap(qimage2ndarray.array2qimage(cv2.cvtColor(self.img_class.img, cv2.COLOR_BGR2RGB)))
         self.scene.removeItem(self.scene_img)
         self.scene_img = self.scene.addPixmap(self.img)
         if movable:
             self.scene_img.setFlag(QGraphicsItem.ItemIsMovable)
-        self.fitInView()
+        else:
+            self.fitInView()
 
     def filter_frame(self):
         def click_contrast():
@@ -281,8 +253,9 @@ class Main(QWidget):
     def adjust_frame(self):
         def click_crop(rotate=False):
             def click_y1():
-                self.img_class.crop_img(self.rb.top, self.rb.bottom, self.rb.left, self.rb.right)
-                self.img_class.change_b_c(beta=40)
+                self.img_class.rotate_img(self.rotate_value, crop=True)
+                self.img_class.crop_img(self.rb.top * 2, self.rb.bottom * 2, self.rb.left * 2, self.rb.right * 2)
+                # self.img_class.change_b_c(beta=40)
                 self.update_img()
                 self.zoom_moment = False
 
@@ -306,13 +279,13 @@ class Main(QWidget):
                 self.rb.close()
 
             def change_slide():
-                value = crop_frame.slider.value()
-                self.img_class.rotate_img(value)
-                self.update_img(True)
+                self.rotate_value = crop_frame.slider.value()
+                self.img_class.rotate_img(self.rotate_value)
+
                 self.rb.setGeometry(self.img_class.left, self.img_class.top, self.img_class.right - self.img_class.left,
                                     self.img_class.bottom - self.img_class.top)
-                print(self.img_class.left, self.img_class.right, self.img_class.top, self.img_class.bottom)
-                #print(self.scene.size())
+                self.rb.update_dim()
+                self.update_img(True)
 
             crop_frame = Crop()
             crop_frame.n_btn.clicked.connect(click_n1)

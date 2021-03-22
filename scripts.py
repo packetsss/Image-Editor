@@ -107,9 +107,14 @@ class Images:
 
     def rotate_img(self, angle, crop=False):
         self.reset()
+        if not crop:
+            self.img = cv2.resize(self.img, (0, 0), fx=0.5, fy=0.5)
+            w, h = self.img.shape[1], self.img.shape[0]
+        else:
+            w, h = self.img_width, self.img_height
+
         self.img = ndimage.rotate(self.img, angle)
 
-        w, h = self.img_width, self.img_height
         angle = math.radians(angle)
         quadrant = int(math.floor(angle / (math.pi / 2))) & 3
         sign_alpha = angle if ((quadrant & 1) == 0) else math.pi - angle
@@ -129,10 +134,6 @@ class Images:
         half_w, half_h = wr // 2, hr // 2
         self.left, self.right, self.top, self.bottom = int(midpoint[0] - half_w), int(midpoint[0] + half_w), \
                                                        int(midpoint[1] - half_h), int(midpoint[1] + half_h)
-        # self.img = cv2.rectangle(self.img, (left, top), (right, bottom), (0, 255, 0), 10)
-
-        # if crop:
-        #     self.crop_img(top, bottom, left, right)
 
     def save_img(self, dst, name):
         cv2.imwrite(f"{dst}\\{name}.{self.img_format}", self.img)
