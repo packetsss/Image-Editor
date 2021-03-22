@@ -2,15 +2,7 @@
 An small and easy-to-use image editor GUI using PyQt5 and Cv2
 
 ## Usage
-`pip install cv2`
-
-`pip install PyQt5`
-
-`pip install numpy`
-
-`pip install qimage2ndarray`
-
-`pip install scipy`
+`pip install cv2`, `pip install PyQt5`, `pip install numpy`, `pip install qimage2ndarray`, `pip install scipy`
 
 Run main.py
 
