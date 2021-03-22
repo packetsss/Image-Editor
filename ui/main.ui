@@ -17,7 +17,7 @@
    <item>
     <layout class="QHBoxLayout" name="hbox">
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout">
+      <layout class="QVBoxLayout" name="vbox1">
        <item>
         <widget class="QGraphicsView" name="gv">
          <property name="styleSheet">
@@ -50,7 +50,17 @@
         </widget>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <widget class="QSlider" name="slider">
+         <property name="maximum">
+          <number>360</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="hbox5">
          <property name="spacing">
           <number>100</number>
          </property>

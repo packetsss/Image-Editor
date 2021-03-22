@@ -102,7 +102,7 @@ class ResizableRubberBand(QWidget):
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & Qt.LeftButton:
-            if self.right <= self.img_class.img_width and self.bottom <= self.img_class.img_height \
+            if self.right <= self.img_class.img.shape[1] and self.bottom <= self.img_class.img.shape[0] \
                     and self.left >= 0 and self.top >= 0:
                 globalPos = event.globalPos()
                 diff = globalPos - self.mouseMovePos
@@ -120,11 +120,11 @@ class ResizableRubberBand(QWidget):
         if self.left < 0:
             self.left = 0
             self.move(0, self.top)
-        if self.right > self.img_class.img_width:
-            self.left = self.img_class.img_width - self._band.width()
+        if self.right > self.img_class.img.shape[1]:
+            self.left = self.img_class.img.shape[1] - self._band.width()
             self.move(self.left, self.top)
-        if self.bottom > self.img_class.img_height:
-            self.top = self.img_class.img_height - self._band.height()
+        if self.bottom > self.img_class.img.shape[0]:
+            self.top = self.img_class.img.shape[0] - self._band.height()
             self.move(self.left, self.top)
         if self.top < 0:
             self.top = 0
@@ -167,11 +167,14 @@ class Main(QWidget):
 
         # find widgets and connect them
         self.vbox = self.findChild(QVBoxLayout, "vbox")
+        self.vbox1 = self.findChild(QVBoxLayout, "vbox1")
         self.base_frame = self.findChild(QFrame, "base_frame")
         self.filter_btn = self.findChild(QPushButton, "filter_btn")
         self.filter_btn.clicked.connect(self.filter_frame)
         self.adjust_btn = self.findChild(QPushButton, "adjust_btn")
         self.adjust_btn.clicked.connect(self.adjust_frame)
+        self.slider = self.findChild(QSlider, "slider")
+        self.slider.setParent(None)
 
         # display img
         self.gv = self.findChild(QGraphicsView, "gv")
@@ -259,6 +262,7 @@ class Main(QWidget):
                 self.update_img()
                 self.zoom_moment = False
 
+                self.slider.setParent(None)
                 crop_frame.frame.setParent(None)
                 self.vbox.addWidget(adjust_frame.frame)
                 self.rb.close()
@@ -274,12 +278,13 @@ class Main(QWidget):
                 self.update_img()
                 self.zoom_moment = False
 
+                self.slider.setParent(None)
                 crop_frame.frame.setParent(None)
                 self.vbox.addWidget(adjust_frame.frame)
                 self.rb.close()
 
             def change_slide():
-                self.rotate_value = crop_frame.slider.value()
+                self.rotate_value = self.slider.value()
                 self.img_class.rotate_img(self.rotate_value)
 
                 self.rb.setGeometry(self.img_class.left, self.img_class.top, self.img_class.right - self.img_class.left,
@@ -290,18 +295,23 @@ class Main(QWidget):
             crop_frame = Crop()
             crop_frame.n_btn.clicked.connect(click_n1)
             crop_frame.y_btn.clicked.connect(click_y1)
-            crop_frame.slider.valueChanged.connect(change_slide)
             adjust_frame.frame.setParent(None)
             self.vbox.addWidget(crop_frame.frame)
 
             self.rb = ResizableRubberBand(self.gv, self.img_class, self.update_img)
             self.rb.setGeometry(300, 200, 400, 250)
             self.img_class.change_b_c(beta=-40)
+            crop_frame.slider.setParent(None)
+
             if not rotate:
-                crop_frame.slider.setParent(None)
                 self.update_img()
             else:
+                self.vbox1.insertWidget(1, self.slider)
+                self.slider.setValue(0)
+                self.slider.valueChanged.connect(change_slide)
                 self.zoom_moment = True
+                self.img_class.rotate_img(0)
+                self.rb.setGeometry(0, 0, self.img_class.img_width // 2, self.img_class.img_height // 2)
                 self.update_img(True)
 
         def click_y():
