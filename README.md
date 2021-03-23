@@ -7,13 +7,13 @@ An small and easy-to-use image editor GUI using PyQt5 and Cv2
 Run main.py
 
 ## Current editing options
-- Crop image
-- Rotate image
-- Change brightness
-- Change contrast
-- Change saturation
 - Auto contrast
 - Auto sharpen
 - Auto cartoon
 - Auto invert
+- Rotate image
+- Crop image
+- Change brightness
+- Change contrast
+- Change saturation
 - Color mask
