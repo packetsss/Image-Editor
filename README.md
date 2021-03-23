@@ -2,7 +2,7 @@
 An small and easy-to-use image editor GUI using PyQt5 and Cv2
 
 ## Usage
-`git clone https://github.com/pyj2001/Image-Editor/`
+`git clone https://github.com/pyj2001/Image-Editor`
 
 `pip install opencv-python`, `pip install PyQt5`, `pip install numpy`, `pip install qimage2ndarray`, `pip install scipy`
 
