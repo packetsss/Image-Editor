@@ -13,6 +13,7 @@ Run main.py
 - Auto sharpen
 - Auto cartoon
 - Auto invert
+- Auto bypass censorship
 - Rotate image
 - Crop image
 - Change brightness
