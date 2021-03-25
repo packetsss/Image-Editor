@@ -63,7 +63,7 @@ class Main(QWidget):
         # misc
         self.rotate_value, self.brightness_value, self.contrast_value, self.saturation_value = 0, 0, 1, 0
         self.flip = [False, False]
-        self.factorr = 1
+        self.zoom_factor = 1
 
     def update_img(self, movable=False):
         self.img = QPixmap(qimage2ndarray.array2qimage(cv2.cvtColor(self.img_class.img, cv2.COLOR_BGR2RGB)))
@@ -75,64 +75,7 @@ class Main(QWidget):
             self.fitInView()
 
     def filter_frame(self):
-        def click_contrast():
-            self.img_class.auto_contrast()
-            self.update_img()
-            filter_frame.contrast_btn.clicked.disconnect()
-
-        def click_sharpen():
-            self.img_class.auto_sharpen()
-            self.update_img()
-            filter_frame.sharpen_btn.clicked.disconnect()
-
-        def click_cartoon():
-            self.img_class.auto_cartoon()
-            self.update_img()
-            filter_frame.cartoon_btn.clicked.disconnect()
-
-        def click_cartoon1():
-            self.img_class.auto_cartoon(1)
-            self.update_img()
-            filter_frame.cartoon_btn1.clicked.disconnect()
-
-        def click_invert():
-            self.img_class.auto_invert()
-            self.update_img()
-            filter_frame.invert_btn.clicked.disconnect()
-
-        def click_bypass():
-            self.img_class.bypass_censorship()
-            self.update_img()
-            filter_frame.bypass_btn.clicked.disconnect()
-
-        def click_y():
-            filter_frame.frame.setParent(None)
-            self.img_class.img_copy = deepcopy(self.img_class.img)
-            self.img_class.grand_img_copy = deepcopy(self.img_class.img)
-            self.vbox.addWidget(self.base_frame)
-
-        def click_n():
-            if not np.array_equal(self.img_class.grand_img_copy, self.img_class.img):
-                msg = QMessageBox.question(self, "Cancel edits", "Confirm to discard all the changes?   ",
-                                           QMessageBox.Yes | QMessageBox.No)
-                if msg != QMessageBox.Yes:
-                    return False
-
-            filter_frame.frame.setParent(None)
-            self.img_class.grand_reset()
-            self.update_img()
-            self.vbox.addWidget(self.base_frame)
-
-        filter_frame = Filter()
-        filter_frame.y_btn.clicked.connect(click_y)
-        filter_frame.n_btn.clicked.connect(click_n)
-        filter_frame.contrast_btn.clicked.connect(click_contrast)
-        filter_frame.sharpen_btn.clicked.connect(click_sharpen)
-        filter_frame.cartoon_btn.clicked.connect(click_cartoon)
-        filter_frame.cartoon_btn1.clicked.connect(click_cartoon1)
-        filter_frame.invert_btn.clicked.connect(click_invert)
-        filter_frame.bypass_btn.clicked.connect(click_bypass)
-
+        filter_frame = Filter(self)
         self.base_frame.setParent(None)
         self.vbox.addWidget(filter_frame.frame)
 
@@ -142,14 +85,14 @@ class Main(QWidget):
                 self.rb.update_dim()
                 if rotate:
                     self.img_class.rotate_img(self.rotate_value, crop=True, flip=self.flip)
-                    self.img_class.crop_img(int(self.rb.top * 2 / self.factorr),
-                                            int(self.rb.bottom * 2 / self.factorr),
-                                            int(self.rb.left * 2 / self.factorr),
-                                            int(self.rb.right * 2 / self.factorr))
+                    self.img_class.crop_img(int(self.rb.top * 2 / self.zoom_factor),
+                                            int(self.rb.bottom * 2 / self.zoom_factor),
+                                            int(self.rb.left * 2 / self.zoom_factor),
+                                            int(self.rb.right * 2 / self.zoom_factor))
                 else:
                     self.img_class.reset(self.flip)
-                    self.img_class.crop_img(int(self.rb.top / self.factorr), int(self.rb.bottom / self.factorr),
-                                            int(self.rb.left // self.factorr), int(self.rb.right // self.factorr))
+                    self.img_class.crop_img(int(self.rb.top / self.zoom_factor), int(self.rb.bottom / self.zoom_factor),
+                                            int(self.rb.left // self.zoom_factor), int(self.rb.right // self.zoom_factor))
 
                 self.update_img()
                 self.zoom_moment = False
@@ -184,9 +127,9 @@ class Main(QWidget):
 
                 self.img_class.rotate_img(self.rotate_value)
 
-                self.rb.setGeometry(int(self.img_class.left * self.factorr), int(self.img_class.top * self.factorr),
-                                    int((self.img_class.right - self.img_class.left) * self.factorr),
-                                    int((self.img_class.bottom - self.img_class.top) * self.factorr))
+                self.rb.setGeometry(int(self.img_class.left * self.zoom_factor), int(self.img_class.top * self.zoom_factor),
+                                    int((self.img_class.right - self.img_class.left) * self.zoom_factor),
+                                    int((self.img_class.bottom - self.img_class.top) * self.zoom_factor))
                 self.rb.update_dim()
                 self.update_img(True)
 
@@ -413,7 +356,7 @@ class Main(QWidget):
                          view_rect.height() / scene_rect.height())
             self.gv.scale(factor, factor)
             self._zoom = 0
-            self.factorr = factor
+            self.zoom_factor = factor
 
 
 def main():

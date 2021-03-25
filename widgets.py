@@ -11,9 +11,12 @@ from PyQt5.QtWidgets import *
 
 
 class Filter(QWidget):
-    def __init__(self):
+    def __init__(self, main):
         super().__init__()
         uic.loadUi("ui\\filter_frame.ui", self)
+        self.img_class, self.update_img, self.base_frame, self.vbox = \
+            main.img_class, main.update_img, main.base_frame, main.vbox
+
         self.frame = self.findChild(QFrame, "frame")
         self.contrast_btn = self.findChild(QPushButton, "contrast_btn")
         self.sharpen_btn = self.findChild(QPushButton, "sharpen_btn")
@@ -30,6 +33,63 @@ class Filter(QWidget):
         self.n_btn.setIcon(QIcon("icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
+
+        self.y_btn.clicked.connect(lambda _: self.click_y())
+        self.n_btn.clicked.connect(lambda _: self.click_n())
+        self.contrast_btn.clicked.connect(lambda _: self.click_contrast())
+        self.sharpen_btn.clicked.connect(lambda _: self.click_sharpen())
+        self.cartoon_btn.clicked.connect(lambda _: self.click_cartoon())
+        self.cartoon_btn1.clicked.connect(lambda _: self.click_cartoon1())
+        self.invert_btn.clicked.connect(lambda _: self.click_invert())
+        self.bypass_btn.clicked.connect(lambda _: self.click_bypass())
+
+    def click_contrast(self):
+        self.img_class.auto_contrast()
+        self.update_img()
+        self.contrast_btn.clicked.disconnect()
+
+    def click_sharpen(self):
+        self.img_class.auto_sharpen()
+        self.update_img()
+        self.sharpen_btn.clicked.disconnect()
+
+    def click_cartoon(self):
+        self.img_class.auto_cartoon()
+        self.update_img()
+        self.cartoon_btn.clicked.disconnect()
+
+    def click_cartoon1(self):
+        self.img_class.auto_cartoon(1)
+        self.update_img()
+        self.cartoon_btn1.clicked.disconnect()
+
+    def click_invert(self):
+        self.img_class.auto_invert()
+        self.update_img()
+        self.invert_btn.clicked.disconnect()
+
+    def click_bypass(self):
+        self.img_class.bypass_censorship()
+        self.update_img()
+        self.bypass_btn.clicked.disconnect()
+
+    def click_y(self):
+        self.frame.setParent(None)
+        self.img_class.img_copy = deepcopy(self.img_class.img)
+        self.img_class.grand_img_copy = deepcopy(self.img_class.img)
+        self.vbox.addWidget(self.base_frame)
+
+    def click_n(self):
+        if not np.array_equal(self.img_class.grand_img_copy, self.img_class.img):
+            msg = QMessageBox.question(self, "Cancel edits", "Confirm to discard all the changes?   ",
+                                       QMessageBox.Yes | QMessageBox.No)
+            if msg != QMessageBox.Yes:
+                return False
+
+        self.frame.setParent(None)
+        self.img_class.grand_reset()
+        self.update_img()
+        self.vbox.addWidget(self.base_frame)
 
 
 class Adjust(QWidget):
@@ -52,6 +112,8 @@ class Adjust(QWidget):
         self.n_btn.setIcon(QIcon("icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
+
+
 
 
 class Crop(QWidget):
@@ -216,7 +278,7 @@ class Face(QWidget):
 class ResizableRubberBand(QWidget):
     def __init__(self, main):
         super(ResizableRubberBand, self).__init__(main.gv)
-        self.img_class, self.update, self.factorr = main.img_class, main.update, main.factorr
+        self.img_class, self.update, self.zoom_factor = main.img_class, main.update, main.zoom_factor
         self.draggable, self.mousePressPos, self.mouseMovePos = True, None, None
         self.left, self.right, self.top, self.bottom = None, None, None, None
         self.borderRadius = 0
@@ -256,8 +318,8 @@ class ResizableRubberBand(QWidget):
 
     def mouseMoveEvent(self, event):
         if self.draggable and event.buttons() & Qt.LeftButton:
-            if self.right <= int(self.img_class.img.shape[1] * self.factorr) and self.bottom <= \
-                    int(self.img_class.img.shape[0] * self.factorr) and self.left >= 0 and self.top >= 0:
+            if self.right <= int(self.img_class.img.shape[1] * self.zoom_factor) and self.bottom <= \
+                    int(self.img_class.img.shape[0] * self.zoom_factor) and self.left >= 0 and self.top >= 0:
                 globalPos = event.globalPos()
                 diff = globalPos - self.mouseMovePos
                 self.move(diff)  # move window
@@ -274,11 +336,11 @@ class ResizableRubberBand(QWidget):
         if self.left < 0:
             self.left = 0
             self.move(0, self.top)
-        if self.right > int(self.img_class.img.shape[1] * self.factorr):
-            self.left = int(self.img_class.img.shape[1] * self.factorr) - self._band.width()
+        if self.right > int(self.img_class.img.shape[1] * self.zoom_factor):
+            self.left = int(self.img_class.img.shape[1] * self.zoom_factor) - self._band.width()
             self.move(self.left, self.top)
-        if self.bottom > int(self.img_class.img.shape[0] * self.factorr):
-            self.top = int(self.img_class.img.shape[0] * self.factorr) - self._band.height()
+        if self.bottom > int(self.img_class.img.shape[0] * self.zoom_factor):
+            self.top = int(self.img_class.img.shape[0] * self.zoom_factor) - self._band.height()
             self.move(self.left, self.top)
         if self.top < 0:
             self.top = 0
