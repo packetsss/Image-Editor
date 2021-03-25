@@ -1,5 +1,5 @@
 # Image-Editor
-A small and easy-to-use image editor GUI using PyQt5 and Cv2
+A small and easy-to-use image editor app using PyQt5 and Cv2
 
 ## Usage
 `git clone https://github.com/pyj2001/Image-Editor`
