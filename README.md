@@ -19,3 +19,4 @@ Run main.py
 - Change contrast
 - Change saturation
 - Color mask
+- Face Detection
