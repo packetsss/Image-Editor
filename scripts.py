@@ -141,16 +141,30 @@ class Images:
         smaller_img = cv2.resize(self.img, (width // 2, height // 2))
         image = np.zeros(self.img.shape, np.uint8)
 
-        image[:height // 2, :width // 2] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
-        image[height // 2:, :width // 2] = smaller_img
-        image[height // 2:, width // 2:] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
-        image[:height // 2, width // 2:] = smaller_img
+        try:
+            image[:height // 2, :width // 2] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+            image[height // 2:, :width // 2] = smaller_img
+            image[height // 2:, width // 2:] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+            image[:height // 2, width // 2:] = smaller_img
+        except:
+            try:
+                image[:height // 2, :width // 2] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+                image[height // 2 + 1:, :width // 2] = smaller_img
+                image[height // 2 + 1:, width // 2:] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+                image[:height // 2, width // 2:] = smaller_img
+            except:
+                image[:height // 2, :width // 2] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+                image[height // 2:, :width // 2] = smaller_img
+                image[height // 2:, width // 2 + 1:] = cv2.rotate(smaller_img, cv2.cv2.ROTATE_180)
+                image[:height // 2, width // 2 + 1:] = smaller_img
         self.img = image
 
     def save_img(self, file):
         cv2.imwrite(file, self.img)
 
-    def reset(self, flip=[False, False]):
+    def reset(self, flip=None):
+        if flip is None:
+            flip = [False, False]
         self.img = deepcopy(self.img_copy)
         if flip[0]:
             self.img = cv2.flip(self.img, 0)
