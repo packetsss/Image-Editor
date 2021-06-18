@@ -1,6 +1,7 @@
 import sys
 import cv2
 import qimage2ndarray
+import pathlib
 from copy import deepcopy
 from scripts import Images
 import numpy as np
@@ -13,7 +14,7 @@ from PyQt5.QtWidgets import *
 class Filter(QWidget):
     def __init__(self, main):
         super().__init__()
-        uic.loadUi("ui\\filter_frame.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\filter_frame.ui", self)
         self.img_class, self.update_img, self.base_frame, self.vbox = \
             main.img_class, main.update_img, main.base_frame, main.vbox
 
@@ -26,11 +27,11 @@ class Filter(QWidget):
         self.bypass_btn = self.findChild(QPushButton, "bypass_btn")
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
 
@@ -95,7 +96,7 @@ class Filter(QWidget):
 class Adjust(QWidget):
     def __init__(self, main):
         super().__init__()
-        uic.loadUi("ui\\adjust_frame.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\adjust_frame.ui", self)
         self.get_zoom_factor = main.get_zoom_factor
 
         self.img_class, self.update_img, self.base_frame = main.img_class, main.update_img, main.base_frame
@@ -112,11 +113,11 @@ class Adjust(QWidget):
         self.mask_btn = self.findChild(QPushButton, "mask_btn")
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
 
@@ -358,33 +359,33 @@ class Adjust(QWidget):
 class Crop(QWidget):
     def __init__(self):
         super().__init__()
-        uic.loadUi("ui\\crop_btn.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\crop_btn.ui", self)
 
         self.frame = self.findChild(QFrame, "frame")
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(70, 70))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(70, 70))
 
         self.rotate = self.findChild(QPushButton, "rotate")
-        self.rotate.setIcon(QIcon("icon/rotate90.png"))
+        self.rotate.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/rotate90.png"))
         self.rotate.setStyleSheet("QPushButton{border: 0px solid;}")
         self.rotate.setIconSize(QSize(50, 50))
         self.rotatect = self.findChild(QPushButton, "rotatect")
-        self.rotatect.setIcon(QIcon("icon/rotatect90.png"))
+        self.rotatect.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/rotatect90.png"))
         self.rotatect.setStyleSheet("QPushButton{border: 0px solid;}")
         self.rotatect.setIconSize(QSize(50, 50))
 
         self.vflip = self.findChild(QPushButton, "vflip")
-        self.vflip.setIcon(QIcon("icon/vflip.png"))
+        self.vflip.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/vflip.png"))
         self.vflip.setStyleSheet("QPushButton{border: 0px solid;}")
         self.vflip.setIconSize(QSize(50, 50))
         self.hflip = self.findChild(QPushButton, "hflip")
-        self.hflip.setIcon(QIcon("icon/hflip.png"))
+        self.hflip.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/hflip.png"))
         self.hflip.setStyleSheet("QPushButton{border: 0px solid;}")
         self.hflip.setIconSize(QSize(50, 50))
 
@@ -392,16 +393,16 @@ class Crop(QWidget):
 class Brightness(QWidget):
     def __init__(self):
         super().__init__()
-        uic.loadUi("ui\\brightness_btn.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\brightness_btn.ui", self)
 
         self.frame = self.findChild(QFrame, "frame")
         self.vbox2 = self.findChild(QVBoxLayout, "vbox2")
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(70, 70))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(70, 70))
 
@@ -413,7 +414,7 @@ class Brightness(QWidget):
 class Ai(QWidget):
     def __init__(self, main):
         super().__init__()
-        uic.loadUi("ui\\ai_frame.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\ai_frame.ui", self)
 
         self.get_zoom_factor = main.get_zoom_factor
         self.img_class, self.update_img, self.base_frame, self.rb, self.vbox, self.zoom_factor = \
@@ -426,11 +427,11 @@ class Ai(QWidget):
         self.face_counter, self.face_cord = 0, None
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
 
@@ -465,7 +466,7 @@ class Ai(QWidget):
 class Face(QWidget):
     def __init__(self, ai_class):
         super().__init__()
-        uic.loadUi("ui\\face_btn.ui", self)
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\face_btn.ui", self)
         self.img_class, self.update_img, self.base_frame, self.rb, self.vbox = \
             ai_class.img_class, ai_class.update_img, ai_class.base_frame, ai_class.rb, ai_class.vbox
         self.frame, self.ai_frame = self.findChild(QFrame, "frame"), ai_class.frame
@@ -475,11 +476,11 @@ class Face(QWidget):
         self.face_counter, self.face_cord = 0, None
 
         self.y_btn = self.findChild(QPushButton, "y_btn")
-        self.y_btn.setIcon(QIcon("icon/check.png"))
+        self.y_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/check.png"))
         self.y_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.y_btn.setIconSize(QSize(60, 60))
         self.n_btn = self.findChild(QPushButton, "n_btn")
-        self.n_btn.setIcon(QIcon("icon/cross.png"))
+        self.n_btn.setIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon/cross.png"))
         self.n_btn.setStyleSheet("QPushButton{border: 0px solid;}")
         self.n_btn.setIconSize(QSize(60, 60))
         self.y_btn.clicked.connect(self.click_y)

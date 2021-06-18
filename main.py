@@ -4,8 +4,8 @@ from widgets import *
 class Start(QWidget):
     def __init__(self):
         super().__init__()
-        uic.loadUi("ui/startup.ui", self)
-        self.setWindowIcon(QIcon("icon/icon.png"))
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\startup.ui", self)
+        self.setWindowIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon\\icon.png"))
 
         self.button = self.findChild(QPushButton, "browse")
         self.button.clicked.connect(self.on_click)
@@ -25,8 +25,8 @@ class Main(QWidget):
     def __init__(self, files):
         # initialize
         super().__init__()
-        uic.loadUi("ui\\main.ui", self)
-        self.setWindowIcon(QIcon("icon/icon.png"))
+        uic.loadUi(f"{pathlib.Path(__file__).parent.absolute()}\\ui\\main.ui", self)
+        self.setWindowIcon(QIcon(f"{pathlib.Path(__file__).parent.absolute()}\\icon\\icon.png"))
         self.move(120, 100)
         self.img_list, self.rb = [], None
         for f in files:
