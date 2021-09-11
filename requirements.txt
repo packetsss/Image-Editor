@@ -1,0 +1,5 @@
+qimage2ndarray==1.8.3
+numpy==1.19.5
+opencv_python_headless==4.3.0.36
+scipy==1.6.3
+PyQt5==5.15.4
