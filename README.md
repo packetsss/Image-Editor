@@ -7,8 +7,10 @@ A small and easy-to-use image editor app using PyQt5 and Cv2
 
 ## Quick Start
 ```
-pip install -r requirement.txt
+# install packages
+pip install -r requirements.txt
 
+# run the program
 python main.py
 ```
 
